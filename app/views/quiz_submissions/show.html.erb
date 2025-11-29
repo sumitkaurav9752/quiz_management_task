@@ -1,0 +1,28 @@
+<h1>Submission for: <%= @submission.quiz.title %></h1>
+
+<p>Submitted at: <%= @submission.created_at.strftime('%Y-%m-%d %H:%M') %></p>
+
+<%- total = @submission.submission_answers.size -%>
+<%- correct = @submission.submission_answers.where(correct: true).count -%>
+<p>Score: <% if total > 0 %> <%= "#{correct}/#{total} (#{((correct.to_f/total)*100).round}%)" %> <% else %> N/A <% end %></p>
+
+<hr>
+
+<ol>
+  <% @submission.submission_answers.includes(:question).each do |ans| %>
+    <li>
+      <p><strong>Question:</strong> <%= ans.question.content %></p>
+      <p><strong>Your answer:</strong> <%= ans.user_anser.presence || '—' %></p>
+      <p><strong>Correct:</strong> <%= ans.correct? ? 'Yes' : 'No' %></p>
+      <% if ans.question.respond_to?(:correct_answer) && ans.question.correct_answer.present? %>
+        <p><strong>Correct answer:</strong> <%= ans.question.correct_answer %></p>
+      <% end %>
+    </li>
+    <hr>
+  <% end %>
+</ol>
+
+<p>
+  <%= link_to 'Back to Submissions', quiz_submissions_path %> |
+  <%= link_to 'View Quiz', quiz_path(@submission.quiz) %>
+</p>

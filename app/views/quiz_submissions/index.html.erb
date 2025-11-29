@@ -1,0 +1,36 @@
+<h1>My Quiz Submissions</h1>
+
+<% if @submissions.blank? %>
+  <p>You have no submissions yet.</p>
+<% else %>
+  <table>
+    <thead>
+      <tr>
+        <th>Quiz</th>
+        <th>Submitted At</th>
+        <th>Score</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @submissions.each do |submission| %>
+        <% total = submission.submission_answers.size %>
+        <% correct = submission.submission_answers.where(correct: true).count %>
+        <tr>
+          <td><%= link_to submission.quiz.title, quiz_path(submission.quiz) %></td>
+          <td><%= submission.created_at.strftime('%Y-%m-%d %H:%M') %></td>
+          <td>
+            <% if total > 0 %>
+              <%= "#{correct}/#{total} (#{((correct.to_f/total)*100).round}% )" %>
+            <% else %>
+              N/A
+            <% end %>
+          </td>
+          <td><%= link_to 'View', quiz_submission_path(submission) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<p><%= link_to 'Back to Quizzes', quizzes_path %></p>

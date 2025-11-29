@@ -1,0 +1,27 @@
+<h1><%= @quiz.title %></h1>
+
+<p><%= @quiz.description %></p>
+
+<%= form_with url: quiz_submit_path(@quiz), method: :post do %>
+
+    <% @quiz.questions.each do |q| %>
+        <strong><%= q.content %></strong>
+
+        <% if q.question_type == "mcq" %>
+            <% q.options.each do |opt| %>
+                <%= radio_button_tag "answers[#{q.id}]", opt.text %>
+                <%= opt.text %>
+            <% end %>
+        
+        <% elsif q.question_type == "true_false" %>
+                <p><%= radio_button_tag "answers[#{q.id}]", "true" %>True</p>
+                <p><%= radio_button_tag "answers[#{q.id}]", "false" %>False</p>
+        <% else %>
+            <%= text_field_tag "answers[#{q.id}]" %>
+        <% end %>
+
+    <% end %>
+
+		<%= submit_tag 'Submit Quiz' %>
+<% end %>
+
